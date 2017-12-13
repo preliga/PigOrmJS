@@ -18,20 +18,22 @@ define(
                     mode: 'cors',
                     cache: 'default'
                 };
+
+                this.data = {
+                    'dataTemplate': this.dataTemplateName,
+                    'type': 'dataTemplate'
+                }
             }
 
             find(where = null, order = null, group = null, variable = {}) {
 
-                let data = {
-                    'dataTemplate': this.dataTemplateName,
-                    'method': 'find',
-                    'where': JSON.stringify(where),
-                    'order': JSON.stringify(order),
-                    'group': JSON.stringify(group),
-                    'variable': JSON.stringify(variable),
-                };
+                this.data.method = 'find';
+                this.data.where = JSON.stringify(where);
+                this.data.order = JSON.stringify(order);
+                this.data.group = JSON.stringify(group);
+                this.data.variable = JSON.stringify(variable);
 
-                let url = this.baseUrlOrm + "?" + getQueryString(data);
+                let url = this.baseUrlOrm + "?" + getQueryString(this.data);
 
                 return fetch(url, this.init)
                     .then(response => response.text())
@@ -41,16 +43,13 @@ define(
 
             findOne(where = null, order = null, group = null, variable = {}) {
 
-                let data = {
-                    'dataTemplate': this.dataTemplateName,
-                    'method': 'findOne',
-                    'where': JSON.stringify(where),
-                    'order': JSON.stringify(order),
-                    'group': JSON.stringify(group),
-                    'variable': JSON.stringify(variable),
-                };
+                this.data.method = 'findOne';
+                this.data.where = JSON.stringify(where);
+                this.data.order = JSON.stringify(order);
+                this.data.group = JSON.stringify(group);
+                this.data.variable = JSON.stringify(variable);
 
-                let url = this.baseUrlOrm + "?" + getQueryString(data);
+                let url = this.baseUrlOrm + "?" + getQueryString(this.data);
 
                 return fetch(url, this.init)
                     .then(response => response.text())
@@ -59,19 +58,32 @@ define(
             }
 
             get(id, variable = {}) {
-                let data = {
-                    'dataTemplate': this.dataTemplateName,
-                    'method': 'get',
-                    'id': id,
-                    'variable': JSON.stringify(variable),
-                };
 
-                let url = this.baseUrlOrm + "?" + getQueryString(data);
+                this.data.method = 'get';
+                this.data.id = id;
+                this.data.variable = JSON.stringify(variable);
+
+                let url = this.baseUrlOrm + "?" + getQueryString(this.data);
 
                 return fetch(url, this.init)
                     .then(response => response.text())
                     .then(jsonString => JSON.parse(jsonString))
                     .then(json => new Record(json.data.results, this.dataTemplateName))
+            }
+
+            exists(where = null, group = null, variable = null) {
+
+                this.data.method = 'exists';
+                this.data.where = JSON.stringify(where);
+                this.data.group = JSON.stringify(group);
+                this.data.variable = JSON.stringify(variable);
+
+                let url = this.baseUrlOrm + "?" + getQueryString(this.data);
+
+                return fetch(url, this.init)
+                    .then(response => response.text())
+                    .then(jsonString => JSON.parse(jsonString))
+                    .then(json => json.data.results)
             }
 
             count(column, where = null, group = null, variable = {}) {
@@ -94,22 +106,20 @@ define(
                 return this._aggregateFunction('avg', column, where, group, variable);
             }
 
-            _aggregateFunction(typ, column, where = null, group = null, variable = {}) {
-                let data = {
-                    'dataTemplate': this.dataTemplateName,
-                    'method': typ,
-                    'column': column,
-                    'where': JSON.stringify(where),
-                    'group': JSON.stringify(group),
-                    'variable': JSON.stringify(variable),
-                };
+            _aggregateFunction(method, column, where = null, group = null, variable = {}) {
 
-                let url = this.baseUrlOrm + "?" + getQueryString(data);
+                this.data.method = method;
+                this.data.column = column;
+                this.data.where = JSON.stringify(where);
+                this.data.group = JSON.stringify(group);
+                this.data.variable = JSON.stringify(variable);
+
+                let url = this.baseUrlOrm + "?" + getQueryString(this.data);
 
                 return fetch(url, this.init)
                     .then(response => response.text())
                     .then(jsonString => JSON.parse(jsonString))
-                    .then(json => json.data.result[0])
+                    .then(json => json.data.results)
             }
 
         };
