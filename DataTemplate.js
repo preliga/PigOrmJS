@@ -84,13 +84,6 @@ define(
                     .then(response => response.text())
                     .then(jsonString => JSON.parse(jsonString))
                     .then(json => json.data.results)
-<<<<<<< HEAD
-=======
-            }
-
-            count(column, where = null, group = null, variable = {}) {
-                return this._aggregateFunction('count', column, where, group, variable);
->>>>>>> master
             }
 
             count(column, where = null, group = null, order = null, variable = {}) {
@@ -109,7 +102,6 @@ define(
                 return this._aggregateFunction('min', column, where, group, order, variable);
             }
 
-<<<<<<< HEAD
             avg(column, where = null, group = null, order = null, variable = {}) {
                 return this._aggregateFunction('avg', column, where, group, order, variable);
             }
@@ -126,14 +118,6 @@ define(
                 this.data.where = JSON.stringify(where);
                 this.data.group = JSON.stringify(group);
                 this.data.order = JSON.stringify(order);
-=======
-            _aggregateFunction(method, column, where = null, group = null, variable = {}) {
-
-                this.data.method = method;
-                this.data.column = column;
-                this.data.where = JSON.stringify(where);
-                this.data.group = JSON.stringify(group);
->>>>>>> master
                 this.data.variable = JSON.stringify(variable);
 
                 let url = this.baseUrlOrm + "?" + getQueryString(this.data);
