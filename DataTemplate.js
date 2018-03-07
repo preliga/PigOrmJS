@@ -25,6 +25,17 @@ define(
                 }
             }
 
+            call(method, params) {
+
+                this.data.method = method;
+                this.data.params = JSON.stringify(params);
+                let url = this.baseUrlOrm + "?" + getQueryString(this.data);
+
+                return fetch(url, this.init)
+                    .then(response => response.text())
+                    .then(jsonString => JSON.parse(jsonString));
+            }
+
             find(where = null, order = null, group = null, variable = {}) {
 
                 this.data.method = 'find';
